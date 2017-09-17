@@ -32,7 +32,7 @@ var hundredThousandairs = null;
 
   
 var datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){ 
-    console.log(parseInt(Math.round(e.amount)));
+    // console.log(parseInt(Math.round(e.amount)));
   return {
     "amount": e.amount,
     "state": e.state,
@@ -73,7 +73,7 @@ var datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){
 console.log("start round to dime");
 
 var datasetWithRoundedDime = (dataset.bankBalances).map(function(e){ 
-    console.log(e);
+    // console.log(e);
   return {
     "amount": e.amount,
     "state": e.state,
@@ -82,7 +82,10 @@ var datasetWithRoundedDime = (dataset.bankBalances).map(function(e){
  });
 
 // set sumOfBankBalances to be the sum of all value held at `amount` for each bank object
-var sumOfBankBalances = null;
+var sumOfBankBalances = (dataset.bankBalances).reduce(function(previous, current){
+  return previous + parseFloat(current.amount);
+}, 0);
+var sumOfBankBalances = parseFloat(sumOfBankBalances.toFixed(2));
 
 /*
   from each of the following states:
@@ -95,7 +98,9 @@ var sumOfBankBalances = null;
   take each `amount` and add 18.9% interest to it rounded to the nearest cent
   and then sum it all up into one value saved to `sumOfInterests`
  */
-var sumOfInterests = null;
+var sumOfInterests =  (dataset.bankBalances).reduce(function(previous, current){
+  
+});
 
 /*
   aggregate the sum of bankBalance amounts
