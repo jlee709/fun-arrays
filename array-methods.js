@@ -29,12 +29,20 @@ var hundredThousandairs = null;
     }
   assign the resulting new array to `datasetWithRoundedDollar`
 */
-var datasetWithRoundedDollar = null;
+
+  
+var datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){ 
+    console.log(parseInt(Math.round(e.amount)));
+  return {
+    "amount": e.amount,
+    "state": e.state,
+    "rounded": Math.round(e.amount)
+  };
+ });
 
 // each bank object new object
-datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){
-  return Math.round(object[key]);
-}
+
+
 // 'amount' and 'state' transfer to new object.
 
 // this is new object ' ' amount rounded to nearest dollar.'
@@ -62,7 +70,16 @@ datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){
     }
   assign the resulting new array to `roundedDime`
 */
-var datasetWithRoundedDime = null;
+console.log("start round to dime");
+
+var datasetWithRoundedDime = (dataset.bankBalances).map(function(e){ 
+    console.log(e);
+  return {
+    "amount": e.amount,
+    "state": e.state,
+    "roundedDime": Math.round(e.amount * 10)/ 10
+  };
+ });
 
 // set sumOfBankBalances to be the sum of all value held at `amount` for each bank object
 var sumOfBankBalances = null;
