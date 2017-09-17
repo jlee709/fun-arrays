@@ -7,6 +7,11 @@ console.log('get started');
 */
 var hundredThousandairs = null;
 
+ hundredThousandairs = (dataset.bankBalances).filter(function(e){
+  return e.amount > 100000;
+ });
+ 
+
 /*
   DO NOT MUTATE DATA.
 
@@ -25,6 +30,14 @@ var hundredThousandairs = null;
   assign the resulting new array to `datasetWithRoundedDollar`
 */
 var datasetWithRoundedDollar = null;
+
+// each bank object new object
+datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){
+  return Math.round(object[key]);
+}
+// 'amount' and 'state' transfer to new object.
+
+// this is new object ' ' amount rounded to nearest dollar.'
 
 /*
   DO NOT MUTATE DATA.
