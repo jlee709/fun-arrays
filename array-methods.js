@@ -1,5 +1,5 @@
 var dataset = require('./dataset.json');
-
+console.log('get started');
 /*
   create an array with accounts from bankBalances that are
   greater than 100000
