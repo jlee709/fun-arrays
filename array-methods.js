@@ -70,7 +70,7 @@ var datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){
     }
   assign the resulting new array to `roundedDime`
 */
-console.log("start round to dime");
+// console.log("start round to dime");
 
 var datasetWithRoundedDime = (dataset.bankBalances).map(function(e){ 
     // console.log(e);
@@ -85,22 +85,41 @@ var datasetWithRoundedDime = (dataset.bankBalances).map(function(e){
 var sumOfBankBalances = (dataset.bankBalances).reduce(function(previous, current){
   return previous + parseFloat(current.amount);
 }, 0);
+
 var sumOfBankBalances = parseFloat(sumOfBankBalances.toFixed(2));
 
-/*
-  from each of the following states:
-    Wisconsin
-    Illinois
-    Wyoming
-    Ohio
-    Georgia
-    Delaware
-  take each `amount` and add 18.9% interest to it rounded to the nearest cent
-  and then sum it all up into one value saved to `sumOfInterests`
- */
-var sumOfInterests =  (dataset.bankBalances).reduce(function(previous, current){
-  
+
+  // from each of the following states:
+  //   Wisconsin
+  //   Illinois
+  //   Wyoming
+  //   Ohio
+  //   Georgia
+  //   Delaware
+  // take each `amount` and add 18.9% interest to it rounded to the nearest cent
+  // and then sum it all up into one value saved to `sumOfInterests`
+ 
+console.log("initiate sum of interests");
+// isolate states form obbj
+// add interst to amount
+// return sum of new amount 
+var sumOfInterests = dataset.bankBalances.filter(function(account){
+  var states = ["WI", "IL", "WY", "OH", "GA", "DE"];
+  if(states.indexOf(account.state)>-1){
+    return true;
+  }
 });
+
+sumOfInterests = sumOfInterests.map(function(account){
+  var test = parseFloat(account.amount)*0.189;
+  return parseFloat(test);
+},0);
+
+sumOfInterests = sumOfInterests.reduce(function(previous,current){
+  return Math.round((previous+current)*100)/100;
+});
+
+
 
 /*
   aggregate the sum of bankBalance amounts
