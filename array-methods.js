@@ -1,5 +1,19 @@
 var dataset = require('./dataset.json');
 console.log('get started');
+
+var bankBalances = dataset.bankBalances;
+
+function round(){
+  return Math.round(amt *100)/ 100;
+}
+
+function roundToCent(amt){
+  return parseFloat(round(amt).toFixed(2));
+}
+
+function calcInterest(amt){
+  return amt * 0.189;
+}
 /*
   create an array with accounts from bankBalances that are
   greater than 100000
@@ -7,8 +21,8 @@ console.log('get started');
 */
 var hundredThousandairs = null;
 
- hundredThousandairs = (dataset.bankBalances).filter(function(e){
-  return e.amount > 100000;
+ hundredThousandairs = bankBalances.filter(function(balance){
+  return balance.amount > 100000;
  });
  
 
@@ -30,8 +44,9 @@ var hundredThousandairs = null;
   assign the resulting new array to `datasetWithRoundedDollar`
 */
 
-  
-var datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){ 
+  // singular name passed into fuction is a good naming convention so balances an balance. etc
+
+var datasetWithRoundedDollar = bankBalances.map(function(e){ 
     // console.log(parseInt(Math.round(e.amount)));
   return {
     "amount": e.amount,
@@ -72,7 +87,7 @@ var datasetWithRoundedDollar = (dataset.bankBalances).map(function(e){
 */
 // console.log("start round to dime");
 
-var datasetWithRoundedDime = (dataset.bankBalances).map(function(e){ 
+var datasetWithRoundedDime = bankBalances.map(function(e){ 
     // console.log(e);
   return {
     "amount": e.amount,
@@ -82,8 +97,8 @@ var datasetWithRoundedDime = (dataset.bankBalances).map(function(e){
  });
 
 // set sumOfBankBalances to be the sum of all value held at `amount` for each bank object
-var sumOfBankBalances = (dataset.bankBalances).reduce(function(previous, current){
-  return previous + parseFloat(current.amount);
+var sumOfBankBalances = bankBalances.reduce(function(sum, current){
+  return sum + parseFloat(current.amount);
 }, 0);
 
 var sumOfBankBalances = parseFloat(sumOfBankBalances.toFixed(2));
@@ -103,24 +118,18 @@ console.log("initiate sum of interests");
 // isolate states form obbj
 // add interst to amount
 // return sum of new amount 
-var sumOfInterests = dataset.bankBalances.filter(function(account){
-  var states = ["WI", "IL", "WY", "OH", "GA", "DE"];
-  if(states.indexOf(account.state)>-1){
-    return true;
-  }
-});
+ 
+var sumOfInterests = parseFloat(bankBalances.reduce(bumpDatInterest, 0).toFixed(2));
 
-sumOfInterests = sumOfInterests.map(function(account){
-  var test = parseFloat(account.amount)*0.189;
-  return parseFloat(test);
-},0);
-
-sumOfInterests = sumOfInterests.reduce(function(previous,current){
-  return Math.round((previous+current)*100)/100;
-});
-
-
-
+function bumpDatInterest(previous, current, index, array) {
+ 
+ var searchArray = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
+ var amount = 0;
+ if (searchArray.includes(current.state)) {
+  amount = parseFloat(((current.amount) * 0.189).toFixed(2));
+ } 
+ return previous + amount;
+}
 /*
   aggregate the sum of bankBalance amounts
   grouped by state
@@ -137,7 +146,22 @@ sumOfInterests = sumOfInterests.reduce(function(previous,current){
     round this number to the nearest 10th of a cent before moving on.
   )
  */
-var stateSums = null;
+
+ console.log("StateSums");
+
+// declare function and object to store the new array with the value keys of the object
+var stateSums = bankBalances.reduce(collectStateSums, {});
+
+// function to delcare and calculate the previous amount 
+function collectStateSums(previous, current) {
+  if (current.state in previous) {
+    previous[current.state] += parseFloat(current.amount);
+    previous[current.state] = Math.round(previous[current.state] * 100)/ 100;
+  } else {
+    previous[current.state] = parseFloat(current.amount);
+  }
+  return previous;
+}
 
 /*
   from each of the following states:
@@ -155,20 +179,51 @@ var stateSums = null;
     round this number to the nearest 10th of a cent before moving on.
   )
  */
-var sumOfHighInterests = null;
+
+ 
+  var sumOfHighInterests = null; //roundToCent(Object.key(stateSums))
+  // .filter(function(state){
+  //   return stateSubset.indexOf(state) > - 1;
+  // })
+  // .filter(function(state) {
+  //   // body...
+  //   return calcInterest(stateSums[state] > 50000;
+    
+  // });
 
 /*
   set `lowerSumStates` to be an array of two letter state
   abbreviations of each state where the sum of amounts
   in the state is less than 1,000,000
  */
-var lowerSumStates = null;
+
+var stateSumsArray = Object.keys(stateSums)
+.map(function (state){
+  return {
+    state: state,
+    stateSum: stateSums[state]
+  };
+});
+
+var lowerSumStates = stateSumsArray
+.filter(function(state){
+  return state.stateSum < 1000000;
+})
+.map(function(state){
+  return state.state;
+});
 
 /*
   aggregate the sum of each state into one hash table
   `higherStateSums` should be the sum of all states with totals greater than 1,000,000
  */
-var higherStateSums = null;
+var higherStateSums = stateSumsArray.filter(function(state){
+  // {}
+  return state.stateSum > 1000000;
+})
+.reduce(function(sum, state){
+  return sum += state.stateSum;
+});
 
 /*
   from each of the following states:
@@ -185,7 +240,14 @@ var higherStateSums = null;
   if true set `areStatesInHigherStateSum` to `true`
   otherwise set it to `false`
  */
-var areStatesInHigherStateSum = null;
+var areStatesInHigherStateSum = stateSumsArray
+.filter(function(state){
+  return stateSumsArray.includes(state.state);
+})
+.every(function(state){
+  return state.stateSum > 2550000;
+});
+
 
 /*
   Stretch Goal && Final Boss
@@ -201,7 +263,16 @@ var areStatesInHigherStateSum = null;
   have a sum of account values greater than 2,550,000
   otherwise set it to be `false`
  */
+
 var anyStatesInHigherStateSum = null;
+
+var areStatesInHigherStateSum = stateSumsArray
+.filter(function(state){
+  return stateSubset.includes(state.state);
+})
+.some(function(state){
+  return state.stateSum > 2550000;
+});
 
 
 module.exports = {
